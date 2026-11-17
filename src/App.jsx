@@ -529,39 +529,30 @@ export default function AdityaTiwariPortfolio() {
     setIsSending(true);
 
     try {
-      const response = await fetch(
-        "https://formsubmit.co/ajax/aadityatiwari854@gmail.com",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify({
-            Name: formData.name,
-            Email: formData.email,
-            Message: formData.message,
-            _subject: `[AfterIt Portfolio] New Message from ${formData.name}`,
-            _template: "table",
-            _captcha: "false",
-          }),
-        }
-      );
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          access_key: "e382d5e2-2a42-4f01-a1e4-ee6623625f69",
+          subject: `[AfterIt Portfolio] New Message from ${formData.name}`,
+          from_name: formData.name,
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+        }),
+      });
 
-      if (response.ok) {
+      const result = await response.json();
+      if (result.success) {
         setFormSubmitted(true);
       } else {
-        // Fallback: open user's mail client if blocked
-        window.location.href = `mailto:aadityatiwari854@gmail.com?subject=${encodeURIComponent(
-          `[AfterIt Portfolio] Message from ${formData.name}`
-        )}&body=${encodeURIComponent(
-          `Name: ${formData.name}\nEmail: ${formData.email}\n\n${formData.message}`
-        )}`;
-        setFormSubmitted(true);
+        alert("Transmission failed. Please try again.");
       }
     } catch (error) {
       console.error("Dispatch error:", error);
-      setFormSubmitted(true);
     } finally {
       setIsSending(false);
     }
@@ -1487,7 +1478,7 @@ export default function AdityaTiwariPortfolio() {
                     </div>
                     <p>
                       Thank you, <strong>{formData.name}</strong>. Your message
-                      has been prepared for{" "}
+                      has been dispatched to{" "}
                       <strong>aadityatiwari854@gmail.com</strong>.
                     </p>
                   </div>
