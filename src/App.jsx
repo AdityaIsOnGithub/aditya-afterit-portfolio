@@ -514,7 +514,9 @@ export default function AdityaTiwariPortfolio() {
     return () => clearInterval(timer);
   }, []);
 
-  const handleFormSubmit = (e) => {
+  const [isSending, setIsSending] = useState(false);
+
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     if (
       !formData.name.trim() ||
@@ -523,7 +525,46 @@ export default function AdityaTiwariPortfolio() {
     ) {
       return;
     }
-    setFormSubmitted(true);
+
+    setIsSending(true);
+
+    try {
+      const response = await fetch(
+        "https://formsubmit.co/ajax/aadityatiwari854@gmail.com",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            Name: formData.name,
+            Email: formData.email,
+            Message: formData.message,
+            _subject: `[AfterIt Portfolio] New Message from ${formData.name}`,
+            _template: "table",
+            _captcha: "false",
+          }),
+        }
+      );
+
+      if (response.ok) {
+        setFormSubmitted(true);
+      } else {
+        // Fallback: open user's mail client if blocked
+        window.location.href = `mailto:aadityatiwari854@gmail.com?subject=${encodeURIComponent(
+          `[AfterIt Portfolio] Message from ${formData.name}`
+        )}&body=${encodeURIComponent(
+          `Name: ${formData.name}\nEmail: ${formData.email}\n\n${formData.message}`
+        )}`;
+        setFormSubmitted(true);
+      }
+    } catch (error) {
+      console.error("Dispatch error:", error);
+      setFormSubmitted(true);
+    } finally {
+      setIsSending(false);
+    }
   };
 
   const formattedCounter = String(preloaderCount).padStart(2, "0");
@@ -1515,7 +1556,7 @@ export default function AdityaTiwariPortfolio() {
                       className="w-full py-3.5 px-6 font-mono text-xs uppercase tracking-widest font-bold flex items-center justify-center gap-2 border border-[#FF4D00] bg-[#FF4D00] text-white hover:bg-[#e04400] transition-colors"
                     >
                       <Send className="w-3.5 h-3.5" />
-                      <span>Send Message</span>
+                      <span>{isSending ? "Dispatching..." : "Send Message"}</span>
                     </button>
                   </>
                 )}
