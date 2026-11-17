@@ -536,7 +536,7 @@ export default function AdityaTiwariPortfolio() {
           Accept: "application/json",
         },
         body: JSON.stringify({
-          access_key: "e382d5e2-2a42-4f01-a1e4-ee6623625f69",
+          access_key: "6031aab8-6ddb-4f9d-baf3-46551125a287",
           subject: `[AfterIt Portfolio] New Message from ${formData.name}`,
           from_name: formData.name,
           name: formData.name,
